@@ -1,6 +1,6 @@
 # Callback API Reference
 
-The GECX sandbox auto-provides these globals. Do NOT import them. Prefer the methods listed here and do not guess at undocumented attributes. This list is not exhaustive: the official best-practices and callback pages also use the `Part` constructors under "Official constructors" below (checked against the CX Agent Studio docs on 2026-10-01).
+The GECX sandbox auto-provides these globals. Do NOT import them. Use ONLY the methods listed here -- do not guess at additional attributes or constructors. The list includes the official `Part` constructors under "Official constructors" below (checked against the CX Agent Studio docs on 2026-10-01).
 
 `typing` types (`Optional`, `Iterator`, `List`, `Dict`, etc.) are NOT auto-provided — they must be explicitly imported. Missing typing imports cause errors at push time.
 
@@ -165,7 +165,7 @@ has_end_session = any(
 
 ## Session State
 
-- cxas-scrapi convention: store values as **strings**. This is NOT a platform limit. The official variables page lists Text, Number, Yes/No (boolean), Custom Object and List types, and handoff rules can only check text, number and boolean variables. Keep a variable numeric if a handoff rule must compare it (e.g. an age cut-off).
+- cxas-scrapi convention: store values as **strings**. This is NOT a platform limit. The official variables page lists Text, Number, Yes/No (boolean), Custom Object and List types, and handoff rules can only check text, number and boolean variables. Keep a variable numeric if a handoff rule must compare it (e.g. an age cut-off). Unverified: whether `callback_context.state` preserves non-string values at runtime has not been measured, so the string convention below stays the safe default inside callbacks.
 - Booleans: use `"true"` / `"false"`, check with `str(state.get("flag", "false")).lower() == "true"`
 - Counters: use `str(int(state.get("counter", "0")) + 1)`
 - Access via `callback_context.state` in callbacks, `context.state` in tools
