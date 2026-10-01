@@ -24,7 +24,7 @@ Client-side function -- agent invokes, client executes and returns result.
 - **response** (-> Schema): Response schema.
 
 ### SystemTool
-Pre-defined: `end_session`, `customize_response`, `transfer_to_agent`.
+Pre-defined: `end_session`, `customize_response`. (`transfer_to_agent` is a reserved name for agent transfers, not a documented system tool.)
 
 - **name** (string): [required]
 - **description** (string): Output only.
@@ -40,6 +40,8 @@ Tool to perform Google web searches for grounding.
 
 ### Toolset
 Represents a collection of tools, currently supporting OpenAPI, MCP, or Connector toolsets.
+
+Other toolset types (2026-10-01 schema): `mcpToolset` (`toolOverrides[]` with `nameOverride`/`descriptionOverride`; the output-only `snapshot` schemas cannot be overridden) and `connectorToolset` (`connection`, `connectorActions[]`, `authConfig` as `EndUserAuthConfig`: OAuth auth code or JWT bearer, values are `$context.variables.<name>`). `openApiToolset` also has `ignoreUnknownFields`.
 
 - **name** (string): Identifier. Format: `projects/.../locations/.../apps/.../toolsets/{toolset_id}`
 - **displayName** (string): [required] User-friendly name. Must be snake_case.

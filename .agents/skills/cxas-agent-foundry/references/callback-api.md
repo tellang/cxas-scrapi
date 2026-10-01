@@ -1,6 +1,6 @@
 # Callback API Reference
 
-The GECX sandbox auto-provides these globals. Do NOT import them. Use ONLY the methods listed here -- do not guess at additional attributes or constructors.
+The GECX sandbox auto-provides these globals. Do NOT import them. Prefer the methods listed here and do not guess at undocumented attributes. This list is not exhaustive: the official best-practices and callback pages also use the `Part` constructors under "Official constructors" below (checked against the CX Agent Studio docs on 2026-10-01).
 
 `typing` types (`Optional`, `Iterator`, `List`, `Dict`, etc.) are NOT auto-provided — they must be explicitly imported. Missing typing imports cause errors at push time.
 
@@ -17,6 +17,26 @@ Part.from_function_call(name="end_session", args={"session_escalated": True})
 Part.from_function_call(name="lookup_benefits", args={"member_id": "H123", "plan_id": "PLN-001"})
 ```
 
+**Official constructors** (from the CX Agent Studio best-practices page; all are returned via `LlmResponse.from_parts(...)`):
+
+```python
+# End the session deterministically (official pattern: "Gracefully terminate the session on tool failures")
+Part.from_end_session(reason="Failure during user authentication.")
+
+# Transfer to another agent deterministically (official pattern: "Transfer to another agent on tool failures")
+Part.from_agent_transfer(agent="escalation agent")
+
+# Voice only: speak fixed content with barge-in disabled (official pattern: "Disallow user barge-in for certain responses")
+Part.from_customized_response(content="Please listen to the following legal disclaimer: ...", disable_barge_in=True)
+
+# Custom JSON payload for the client; not visible to the LLM (official pattern: "Using custom payloads to drive your user interface")
+Part.from_json(data=json.dumps(payload))
+```
+
+The official telephony page also ends a session from `before_model_callback` on the hang-up event:
+`LlmResponse.from_parts([Part.from_function_call('sum', {'x': 1, 'y': 2}), Part.from_end_session(reason='...')])`
+when `part.text == "<event>sys.remote-call-disconnected</event>"`.
+
 **Reading Parts:**
 
 ```python
@@ -28,7 +48,7 @@ part.function_response           # object | None -- the function response
 ```
 
 **DO NOT USE:**
-- `Part(text=...)` -- use `Part.from_text()` instead
+- `Part(text=...)` -- prefer `Part.from_text()`. Note: the official callback page examples do use `Part(text=...)` and `LlmResponse(content=Content(parts=[...]))`, so these are a cxas-scrapi convention, not a platform restriction.
 - `part.custom_metadata` -- does not exist
 - `part.inline_data` -- internal, use `text_or_transcript()` instead
 
@@ -145,7 +165,7 @@ has_end_session = any(
 
 ## Session State
 
-- All values are **strings** -- GECX state only supports string values
+- cxas-scrapi convention: store values as **strings**. This is NOT a platform limit. The official variables page lists Text, Number, Yes/No (boolean), Custom Object and List types, and handoff rules can only check text, number and boolean variables. Keep a variable numeric if a handoff rule must compare it (e.g. an age cut-off).
 - Booleans: use `"true"` / `"false"`, check with `str(state.get("flag", "false")).lower() == "true"`
 - Counters: use `str(int(state.get("counter", "0")) + 1)`
 - Access via `callback_context.state` in callbacks, `context.state` in tools

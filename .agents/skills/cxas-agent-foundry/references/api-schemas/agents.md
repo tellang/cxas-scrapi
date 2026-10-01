@@ -16,7 +16,8 @@
 - **beforeToolCallbacks** (array[-> Callback]): Before each tool invocation.
 - **afterToolCallbacks** (array[-> Callback]): After each tool invocation.
 - **guardrails** (array[string])
-- **transferRules** (array[-> TransferRule]): First match wins.
+- **transferRules** (array[-> TransferRule]): First match wins. Parent/child agent transfers only; human escalation uses `end_session(session_escalated=True)` plus channel variables.
+- Agent type (union, at most one): `llmAgent` (default), `remoteDialogflowAgent` (hands the session to a Dialogflow CX flow "until the session ends or flow ends"; `flowId`, `environmentId` (draft if unset), `inputVariableMapping`, `outputVariableMapping`, `languageCodeVariable`, `respectResponseInterruptionSettings`), `remoteA2aAgent`. If `remoteDialogflowAgent` is set, all other agent-level properties are ignored.
 
 ### AgentTransfer
 - **targetAgent** (string): [required] Format: `projects/.../agents/{agent}`

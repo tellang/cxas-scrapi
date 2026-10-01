@@ -27,6 +27,7 @@ Top-level container for agents.
 ### ModelSettings
 - **model** (string): LLM model name. Inherits from parent if not set.
 - **temperature** (number): Lower = predictable, higher = creative.
+- **thinkingLevel** (enum: `DEFAULT` | `LOW` | `MEDIUM` | `HIGH`): Present in the v1/v1beta schema as of 2026-10-01. Whether a given voice model honors it is unverified.
 
 ### LanguageSettings
 - **defaultLanguageCode** (string)

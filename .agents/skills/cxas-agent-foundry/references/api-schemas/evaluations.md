@@ -206,7 +206,7 @@ App-level settings.
 ### EvaluationRun
 - **name** (string): Format: `projects/.../evaluationRuns/{evaluationRun}`
 - **evaluationType** (enum: `GOLDEN` | `SCENARIO` | `MIXED`)
-- **state** (enum: `RUNNING` | `COMPLETED` | `ERROR`)
+- **state** (enum: `QUEUED` | `RUNNING` | `COMPLETED` | `ERROR` | `CANCELLED`)
 - **progress** (-> EvaluationRunProgress)
 - **config** (-> EvaluationConfig)
 - **runCount** (integer)

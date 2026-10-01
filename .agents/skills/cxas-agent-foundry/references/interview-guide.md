@@ -13,8 +13,8 @@
 
 1. **What does this agent do?** -- "customer support for billing issues", "booking assistant", etc.
 2. **Modality** -- Voice/audio or text? This determines the model:
-   - **Audio/voice**: `gemini-3.1-flash-live` (streaming, real-time voice)
-   - **Text**: `gemini-3-flash` (text-only, lower latency)
+   - **Audio/voice**: `gemini-3.1-flash-live` (streaming, real-time voice) or `composite-v1` (Listener + Thinking + Speaker sub-models; both Voice Optimized GA as of 2026-10-01)
+   - **Text**: `gemini-3-flash` (text-only, lower latency; Preview in CX Agent Studio as of 2026-10-01, GA alternatives are `gemini-3.7-flash`, `gemini-3.5-flash`, `gemini-2.5-flash`)
    - **If voice:** Ask about speaking rate requirements. The default tempo can feel slow for some use cases. Set `speakingRate` in the Console's voice config rather than relying on prompt instructions — natural language pacing guidance is unreliable (see `references/gecx-design-guide.md` → Speech Rate and Pacing).
 3. **Requirements source** -- Ask for the PRD, spec doc, or requirements. Can be a file path, URL, or pasted text. If they don't have a formal doc, interview them to build one.
 4. **Existing resources** -- Do they have sample conversations, mock data, customer profiles, or an existing agent to reference?

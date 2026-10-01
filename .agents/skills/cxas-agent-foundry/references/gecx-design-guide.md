@@ -327,7 +327,7 @@ Variables serve as the foundational architecture for maintaining agent state, pr
 - **Naming Conventions:** Apply consistent patterns, such as underscore prefixes, to distinguish them from core logic variables.
 - **JSON Schemas:** Capture complex state data within structured schemas rather than managing a fragmented list of individual variables.
 - **State Management:** Guidelines for efficient state control
-- **Variable names:** Important to note that variable values are not substituted in prompts, changes to variable values are provided as part of conversation history. It is important to give semantically descriptive names for the model to understand the importance of variables in the context.
+- **Variable names:** Dynamic variables (`{name}`) are not substituted in prompts; changes to their values are provided as part of conversation history. Static variables (`{{name}}`) are different: the official variables page says they "are compiled directly into the agent prompt before the model call happens" as "a direct 1:1 text substitution". It is important to give semantically descriptive names for the model to understand the importance of variables in the context.
 - **When to use State Variables:** Use state variables to collect/update information, perform routing/state transitions, remember checkpoints
 - **Variable Explosion:** Implement JSON schemas to mitigate the complexity and "context rot" caused by an excessive number of state variables.
 - **Feature Encapsulation:** Consolidate variables related to a specific tool or logical feature into a single, unified JSON state variable.
@@ -335,7 +335,7 @@ Variables serve as the foundational architecture for maintaining agent state, pr
 - **Dynamic Prompting:** Leverage variables to enable advanced, context-aware prompt updates programmatically.
 - **Instruction Density:** Since variables determine instruction complexity, retain only those vital for decision-making and eliminate "ghost" variables.
 
-Contrary to common belief, variables are not directly substituted into the prompt; instead, the agent tracks the entire history of variable updates to maintain state.
+Dynamic variables (`{name}`) are not directly substituted into the prompt; instead, the agent tracks the entire history of variable updates to maintain state. Static variables (`{{name}}`) are substituted 1:1 before the model call, and changing their values invalidates prompt caching (official variables page).
 
 ## Tool Design Guidelines
 An agent is only as capable as its environment. A good tool design bridges the gap between reasoning and action, transforming a static model into a dynamic problem-solver. A good tool design prioritizes low latency and high reliability.
@@ -434,7 +434,7 @@ Use callbacks when behavior MUST be deterministic -- don't rely on instructions 
 - **Deterministic greeting**: `before_model_callback` intercepts session start and returns static greeting
 - **Silence handling** (voice): `before_model_callback` detects "no user activity" signals, tracks counter in state, ends session after 3 silences
 - **Deterministic escalation**: `LlmResponse.from_parts()` combines text + agent transfer in a single response
-- **Calling tools from callbacks**: Use `tools.{function_name}(args)` for Python tools, `tools.{DisplayName}_{OperationId}(args)` for API connectors. System tools (`end_session`) cannot be called from callbacks.
+- **Calling tools from callbacks**: Use `tools.{function_name}(args)` for Python tools, `tools.{DisplayName}_{OperationId}(args)` for API connectors. System tools cannot be invoked via `tools.end_session(...)` from callbacks, but a callback can return `Part.from_end_session(reason=...)` or `Part.from_agent_transfer(agent=...)` in `LlmResponse.from_parts()` (official best-practices patterns; see `callback-api.md`).
 
 #### Multi-model-call turns
 The LLM can split a single turn across multiple model calls. The `after_model_callback` fires on EACH call separately. Use `callback_context.events` to check if the agent already produced text in a prior model call -- prevents double-text injection.
@@ -472,7 +472,7 @@ Adding programmatic logic to instructions (state-tracked counters, multi-step co
 
 #### Don't fight the LLM
 GUIDE, don't PREVENT:
-- `hide_tool()` reduces tool awareness -> worse instruction-following (for simple agents — see exception below)
+- `hide_tool()` reduces tool awareness -> worse instruction-following (for simple agents; see exception below). This is a cxas-scrapi field observation. The official Python tools page documents "Deterministic tool masking using before_model_callback" with `llm_request.config.hide_tool()` (or `excluded_tools`) to hide tools that do not fit the active modality.
 - "Do NOT call this tool" confuses the LLM
 - Removing tools breaks instructions and goldens that reference them
 - Complex programmatic logic in instructions -> LLM handles natural language better

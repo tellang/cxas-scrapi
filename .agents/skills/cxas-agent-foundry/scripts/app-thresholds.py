@@ -184,7 +184,7 @@ def _sync_thresholds_to_local(args: typing.Any) -> typing.Any:
         changed = True
 
     if args.hallucination is not None:
-        behavior_map = {"unspecified": "UNSPECIFIED", "disabled": "DISABLED", "enabled_strict": "ENABLED_STRICT", "enabled": "ENABLED"}
+        behavior_map = {"unspecified": "HALLUCINATION_METRIC_BEHAVIOR_UNSPECIFIED", "disabled": "DISABLED", "enabled_strict": "ENABLED", "enabled": "ENABLED"}
         thresholds["goldenHallucinationMetricBehavior"] = behavior_map.get(args.hallucination.lower(), args.hallucination.upper())
         changed = True
 

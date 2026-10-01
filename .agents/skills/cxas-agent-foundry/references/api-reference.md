@@ -66,7 +66,7 @@ grep -A 20 "def create_" .venv/lib/python3.13/site-packages/cxas_scrapi/core/<mo
 - Tools must be associated via `update_agent(tools=[...])` -- creating them is not enough
 - `end_session` is a built-in system tool -- associate it, don't create it
 - `create_callback` APPENDS -- be aware when calling multiple times
-- Variables: use `variable_name` not `name`, only `STRING`/`BOOLEAN` types, parse counters with `int(val or 0)`
+- Variables: use `variable_name` not `name`. The platform `Schema.Type` also allows `INTEGER`, `NUMBER`, `OBJECT`, `ARRAY`; restricting to `STRING`/`BOOLEAN` is this SDK guide's convention, not a CES limit (handoff rules can compare number variables). Parse string counters with `int(val or 0)`
 
 ## Apps
 
@@ -199,7 +199,7 @@ def my_tool(arg1: str, arg2: str = "") -> dict:
     return {"status": "success"}
 ```
 
-System tools (`end_session`, `customize_response`, `transfer_to_agent`) are built-in -- reference by name in agent JSON, don't create.
+System tools (`end_session`, `customize_response`) are built-in -- reference by name in agent JSON, don't create. `transfer_to_agent` is a reserved tool name (export format reference) used for agent transfers, but it is not on the official system tools page.
 
 **Schema:** `api-schemas/tools.md`
 
