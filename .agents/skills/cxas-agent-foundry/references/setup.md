@@ -30,7 +30,7 @@ Ask for details **one at a time** -- don't batch all questions into a single mes
 
 Everything else is derived:
 - **Location**: defaults to `us`
-- **Model**: `gemini-3.1-flash-live` for audio, `gemini-3-flash` for text. As of 2026-10-01 the official model table lists `composite-v1` as a second Voice Optimized GA model, and `gemini-3-flash` is Preview in CX Agent Studio (GA text models: `gemini-3.7-flash`, `gemini-3.5-flash`, `gemini-2.5-flash`). Confirm with the user before defaulting to a Preview model.
+- **Model**: `gemini-3.1-flash-live` for audio, `gemini-3-flash` for text. As of 2026-10-01 the official model table lists Gemini Composite V1 as a second Voice Optimized GA model (the table labels it `composite-v1`; the API `model` value is `gemini-composite-v1`), and `gemini-3-flash` is Preview in CX Agent Studio (GA text models: `gemini-3.7-flash`, `gemini-3.5-flash`, `gemini-2.5-flash`). Confirm with the user before defaulting to a Preview model.
 - **deployed_app_id**: `null` for new apps (set after first push)
 
 Once you have all answers, write `<project_name>/gecx-config.json` inside the project folder (NOT at the repo root):
